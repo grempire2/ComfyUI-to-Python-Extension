@@ -1,0 +1,85 @@
+{
+  "48": {
+    "inputs": {
+      "ckpt_name": "envysunflowerxl01turbo_v10.safetensors",
+      "vae_name": "Baked VAE",
+      "clip_skip": -1,
+      "lora_name": "sdxl_lightning_8step_lora.safetensors",
+      "lora_model_strength": 1,
+      "lora_clip_strength": 1,
+      "positive": "(best quality materpiece official art cinematic bokeh) anime style\nBREAK\n(loli:0.9) korean bombshell (rainbow hair), large breasts, detailed eyes pink eyes\nBREAK\ndoge coin crypto dog coin doge coin round circle currency doge coin",
+      "negative": "worst quality, ugly, western comics, haze, muted colors, deformed, bad eyes musculine elf naked nude nipples",
+      "token_normalization": "none",
+      "weight_interpretation": "comfy",
+      "empty_latent_width": 1024,
+      "empty_latent_height": 1024,
+      "batch_size": 1
+    },
+    "class_type": "Efficient Loader",
+    "_meta": {
+      "title": "Efficient Loader"
+    }
+  },
+  "71": {
+    "inputs": {
+      "filename_prefix": "draft/031624",
+      "images": [
+        "84",
+        0
+      ]
+    },
+    "class_type": "SaveImage",
+    "_meta": {
+      "title": "Save Image"
+    }
+  },
+  "83": {
+    "inputs": {
+      "add_noise": "enable",
+      "noise_seed": 0,
+      "steps": 8,
+      "cfg": 1.5,
+      "sampler_name": "euler_ancestral",
+      "scheduler": "sgm_uniform",
+      "start_at_step": 0,
+      "end_at_step": 10000,
+      "return_with_leftover_noise": "disable",
+      "model": [
+        "48",
+        0
+      ],
+      "positive": [
+        "48",
+        1
+      ],
+      "negative": [
+        "48",
+        2
+      ],
+      "latent_image": [
+        "48",
+        3
+      ]
+    },
+    "class_type": "KSamplerAdvanced",
+    "_meta": {
+      "title": "KSampler (Advanced)"
+    }
+  },
+  "84": {
+    "inputs": {
+      "samples": [
+        "83",
+        0
+      ],
+      "vae": [
+        "48",
+        4
+      ]
+    },
+    "class_type": "VAEDecode",
+    "_meta": {
+      "title": "VAE Decode"
+    }
+  }
+}
