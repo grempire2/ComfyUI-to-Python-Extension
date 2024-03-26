@@ -3,13 +3,16 @@ import random
 import sys
 from typing import Sequence, Mapping, Any, Union
 import torch
-from datetime import datetime
 
-_positive = "1girl, princess peach, cat humanoid, ?, metal collar, chain leash, nude, cross pasties, paw gloves, spiral eyes, confusion,"
-_negative = "(bad quality:1.4), unaestheticXL_Alb2 signature watermark logo signature"
-file_date = datetime.now().strftime("%m%d%y")
-_batch_size = 1
-batch_repeat = 1
+positive_ = (
+    "1girl vampire pussy squirting anus orgasm see through (covered nipples) neon fang "
+)
+negative_ = ""
+
+ckpt_name_ = "aiponyanime_v1.safetensors"
+
+empty_latent_width_ = 1024
+empty_latent_height_ = 1024
 
 
 def get_value_at_index(obj: Union[Sequence, Mapping], index: int) -> Any:
@@ -114,8 +117,8 @@ def import_custom_nodes() -> None:
 
 
 from nodes import (
-    KSamplerAdvanced,
     NODE_CLASS_MAPPINGS,
+    KSamplerAdvanced,
     LoraLoaderModelOnly,
     VAEDecode,
     SaveImage,
@@ -127,19 +130,20 @@ def main():
     with torch.inference_mode():
         efficient_loader = NODE_CLASS_MAPPINGS["Efficient Loader"]()
         efficient_loader_48 = efficient_loader.efficientloader(
-            ckpt_name="aiponyanime_v1.safetensors",
+            ckpt_name=ckpt_name_,
             vae_name="Baked VAE",
             clip_skip=-2,
-            lora_name="None",
-            lora_model_strength=1,
-            lora_clip_strength=1,
-            positive=_positive,
-            negative=_negative,
-            token_normalization="none",
+            lora_name="sdxl_lightning_8step_lora.safetensors",
+            lora_model_strength=0,
+            lora_clip_strength=0,
+            positive=positive_,
+            negative="(bad quality:1.4), unaestheticXL_Alb2 (signature watermark logo signature text) censored frame cartoon drawing painting sketch"
+            + negative_,
+            token_normalization="mean",
             weight_interpretation="A1111",
-            empty_latent_width=1024,
-            empty_latent_height=1024,
-            batch_size=_batch_size,
+            empty_latent_width=empty_latent_width_,
+            empty_latent_height=empty_latent_height_,
+            batch_size=1,
         )
 
         upscalemodelloader = NODE_CLASS_MAPPINGS["UpscaleModelLoader"]()
@@ -156,15 +160,15 @@ def main():
 
         samloader = NODE_CLASS_MAPPINGS["SAMLoader"]()
         samloader_86 = samloader.load_model(
-            model_name="sam_vit_b_01ec64.pth", device_mode="AUTO"
+            model_name="sam_vit_b_01ec64.pth", device_mode="Prefer GPU"
         )
 
         freeu_v2 = NODE_CLASS_MAPPINGS["FreeU_V2"]()
         freeu_v2_105 = freeu_v2.patch(
             b1=1.1,
-            b2=1.15,
+            b2=1.1500000000000001,
             s1=0.85,
-            s2=0.35,
+            s2=0.35000000000000003,
             model=get_value_at_index(efficient_loader_48, 0),
         )
 
@@ -178,10 +182,10 @@ def main():
         ksampleradvanced = KSamplerAdvanced()
         vaedecode = VAEDecode()
         ultimatesdupscale = NODE_CLASS_MAPPINGS["UltimateSDUpscale"]()
-        saveimage = SaveImage()
         facedetailer = NODE_CLASS_MAPPINGS["FaceDetailer"]()
+        saveimage = SaveImage()
 
-        for q in range(batch_repeat):
+        for q in range(3):
             ksampleradvanced_99 = ksampleradvanced.sample(
                 add_noise="enable",
                 noise_seed=random.randint(1, 2**64),
@@ -231,11 +235,6 @@ def main():
                 upscale_model=get_value_at_index(upscalemodelloader_56, 0),
             )
 
-            saveimage_71 = saveimage.save_images(
-                filename_prefix=f"draft/{file_date}",
-                images=get_value_at_index(vaedecode_101, 0),
-            )
-
             facedetailer_84 = facedetailer.doit(
                 guide_size=384,
                 guide_size_for=True,
@@ -274,7 +273,8 @@ def main():
             )
 
             saveimage_87 = saveimage.save_images(
-                filename_prefix=file_date, images=get_value_at_index(facedetailer_84, 0)
+                filename_prefix="draft/032524",
+                images=get_value_at_index(facedetailer_84, 0),
             )
 
 

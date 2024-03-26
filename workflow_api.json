@@ -4,12 +4,12 @@
       "ckpt_name": "aiponyanime_v1.safetensors",
       "vae_name": "Baked VAE",
       "clip_skip": -2,
-      "lora_name": "None",
-      "lora_model_strength": 1,
-      "lora_clip_strength": 1,
-      "positive": "1girl, princess peach, cat humanoid, ?, metal collar, chain leash, nude, cross pasties, paw gloves, spiral eyes, confusion,",
-      "negative": "(bad quality:1.4), unaestheticXL_Alb2 signature watermark logo signature",
-      "token_normalization": "none",
+      "lora_name": "sdxl_lightning_8step_lora.safetensors",
+      "lora_model_strength": 0,
+      "lora_clip_strength": 0,
+      "positive": "1girl vampire pussy squirting anus orgasm see through (covered nipples) neon fang ",
+      "negative": "(bad quality:1.4), unaestheticXL_Alb2 (signature watermark logo signature text) censored frame cartoon drawing painting sketch",
+      "token_normalization": "mean",
       "weight_interpretation": "A1111",
       "empty_latent_width": 1024,
       "empty_latent_height": 1024,
@@ -23,7 +23,7 @@
   "52": {
     "inputs": {
       "upscale_by": 2,
-      "seed": 1066734114940866,
+      "seed": 468144111087754,
       "steps": 4,
       "cfg": 2,
       "sampler_name": "euler_ancestral",
@@ -80,25 +80,12 @@
       "title": "Load Upscale Model"
     }
   },
-  "71": {
-    "inputs": {
-      "filename_prefix": "draft/032024",
-      "images": [
-        "101",
-        0
-      ]
-    },
-    "class_type": "SaveImage",
-    "_meta": {
-      "title": "Save Image"
-    }
-  },
   "84": {
     "inputs": {
       "guide_size": 384,
       "guide_size_for": true,
       "max_size": 1024,
-      "seed": 796799391928574,
+      "seed": 402893789999678,
       "steps": 4,
       "cfg": 2,
       "sampler_name": "euler_ancestral",
@@ -171,7 +158,7 @@
   "86": {
     "inputs": {
       "model_name": "sam_vit_b_01ec64.pth",
-      "device_mode": "AUTO"
+      "device_mode": "Prefer GPU"
     },
     "class_type": "SAMLoader",
     "_meta": {
@@ -180,7 +167,7 @@
   },
   "87": {
     "inputs": {
-      "filename_prefix": "032024",
+      "filename_prefix": "draft/032524",
       "images": [
         "84",
         0
@@ -208,7 +195,7 @@
   "99": {
     "inputs": {
       "add_noise": "enable",
-      "noise_seed": 358260589433551,
+      "noise_seed": 661565241207343,
       "steps": 25,
       "cfg": 8,
       "sampler_name": "euler_ancestral",
