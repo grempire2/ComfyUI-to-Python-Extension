@@ -5,7 +5,7 @@ set "file=X:\ComfyUI_windows_portable\ComfyUI\ComfyUI-to-Python-Extension\workfl
 set "tempFile=temp.py"
 
 :: Create a new temporary file
-powershell -Command "$content = Get-Content %file%; $newContent = @(); foreach ($line in $content) { if ($line -match 'negative=') { $newLine = $line -replace 'negative=.*?,', 'negative=negative_,'; $newContent += $newLine } else { $newContent += $line } }; $newContent | Set-Content %tempFile%"
+powershell -Command "$content = Get-Content %file%; $newContent = @(); foreach ($line in $content) { if ($line -match '\bnegative=\".*\",') { $newLine = $line -replace '\bnegative=\".*\",', 'negative=negative_,'; $newContent += $newLine } else { $newContent += $line } }; $newContent | Set-Content %tempFile%"
 
 :: Add the new variable at the top of the script after the imports
 powershell -Command "$content = Get-Content %tempFile%; $content[0], 'negative_ = \"\"', $content[1..($content.Length - 1)] | Set-Content %tempFile%"
