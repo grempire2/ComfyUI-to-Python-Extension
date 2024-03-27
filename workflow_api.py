@@ -1,18 +1,21 @@
+import argparse
+parser = argparse.ArgumentParser()
+parser.add_argument("--positive_", type=str, required=True)
+parser.add_argument("--negative_", type=str, required=True)
+parser.add_argument("--ckpt_name_", type=str, required=True)
+parser.add_argument("--empty_latent_width_", type=int, required=True)
+parser.add_argument("--empty_latent_height_", type=int, required=True)
+args = parser.parse_args()
+positive_ = args.positive_
+negative_ = args.negative_
+ckpt_name_ = args.ckpt_name_
+empty_latent_width_ = args.empty_latent_width_
+empty_latent_height_ = args.empty_latent_height_
 import os
 import random
 import sys
 from typing import Sequence, Mapping, Any, Union
 import torch
-
-positive_ = (
-    "1girl vampire pussy squirting anus orgasm see through (covered nipples) neon fang "
-)
-negative_ = ""
-
-ckpt_name_ = "aiponyanime_v1.safetensors"
-
-empty_latent_width_ = 1024
-empty_latent_height_ = 1024
 
 
 def get_value_at_index(obj: Union[Sequence, Mapping], index: int) -> Any:
@@ -119,9 +122,9 @@ def import_custom_nodes() -> None:
 from nodes import (
     NODE_CLASS_MAPPINGS,
     KSamplerAdvanced,
+    SaveImage,
     LoraLoaderModelOnly,
     VAEDecode,
-    SaveImage,
 )
 
 
@@ -137,8 +140,7 @@ def main():
             lora_model_strength=0,
             lora_clip_strength=0,
             positive=positive_,
-            negative="(bad quality:1.4), unaestheticXL_Alb2 (signature watermark logo signature text) censored frame cartoon drawing painting sketch"
-            + negative_,
+            negative=negative_,
             token_normalization="mean",
             weight_interpretation="A1111",
             empty_latent_width=empty_latent_width_,
@@ -185,7 +187,7 @@ def main():
         facedetailer = NODE_CLASS_MAPPINGS["FaceDetailer"]()
         saveimage = SaveImage()
 
-        for q in range(3):
+        for q in range(10):
             ksampleradvanced_99 = ksampleradvanced.sample(
                 add_noise="enable",
                 noise_seed=random.randint(1, 2**64),
