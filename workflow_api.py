@@ -1,16 +1,3 @@
-import argparse
-parser = argparse.ArgumentParser()
-parser.add_argument("--positive_", type=str, required=True)
-parser.add_argument("--negative_", type=str, required=True)
-parser.add_argument("--ckpt_name_", type=str, required=True)
-parser.add_argument("--empty_latent_width_", type=int, required=True)
-parser.add_argument("--empty_latent_height_", type=int, required=True)
-args = parser.parse_args()
-positive_ = args.positive_
-negative_ = args.negative_
-ckpt_name_ = args.ckpt_name_
-empty_latent_width_ = args.empty_latent_width_
-empty_latent_height_ = args.empty_latent_height_
 import os
 import random
 import sys
@@ -119,13 +106,7 @@ def import_custom_nodes() -> None:
     init_custom_nodes()
 
 
-from nodes import (
-    NODE_CLASS_MAPPINGS,
-    KSamplerAdvanced,
-    SaveImage,
-    LoraLoaderModelOnly,
-    VAEDecode,
-)
+from nodes import LoraLoaderModelOnly, LoadImage, SaveImage, NODE_CLASS_MAPPINGS
 
 
 def main():
@@ -133,18 +114,18 @@ def main():
     with torch.inference_mode():
         efficient_loader = NODE_CLASS_MAPPINGS["Efficient Loader"]()
         efficient_loader_48 = efficient_loader.efficientloader(
-            ckpt_name=ckpt_name_,
+            ckpt_name="aiponyanime_v1.safetensors",
             vae_name="Baked VAE",
             clip_skip=-2,
-            lora_name="sdxl_lightning_8step_lora.safetensors",
-            lora_model_strength=0,
-            lora_clip_strength=0,
-            positive=positive_,
-            negative=negative_,
+            lora_name="None",
+            lora_model_strength=1,
+            lora_clip_strength=1,
+            positive="1girl robot girl, (robot joints, intervention unit, glowing chest), full body, white mechanical head, bangs, arched back, hoodie, covered nipples, provocative, cosmic, cables electrical wires, smirk,covered face",
+            negative="(bad quality:1.4), unaestheticXL_Alb2 signature watermark logo signature, (censored), (navel)",
             token_normalization="mean",
             weight_interpretation="A1111",
-            empty_latent_width=empty_latent_width_,
-            empty_latent_height=empty_latent_height_,
+            empty_latent_width=1024,
+            empty_latent_height=1024,
             batch_size=1,
         )
 
@@ -162,7 +143,7 @@ def main():
 
         samloader = NODE_CLASS_MAPPINGS["SAMLoader"]()
         samloader_86 = samloader.load_model(
-            model_name="sam_vit_b_01ec64.pth", device_mode="Prefer GPU"
+            model_name="sam_vit_b_01ec64.pth", device_mode="AUTO"
         )
 
         freeu_v2 = NODE_CLASS_MAPPINGS["FreeU_V2"]()
@@ -181,41 +162,21 @@ def main():
             model=get_value_at_index(freeu_v2_105, 0),
         )
 
-        ksampleradvanced = KSamplerAdvanced()
-        vaedecode = VAEDecode()
+        loadimage = LoadImage()
+        loadimage_108 = loadimage.load_image(image="042524_00010_.png")
+
         ultimatesdupscale = NODE_CLASS_MAPPINGS["UltimateSDUpscale"]()
         facedetailer = NODE_CLASS_MAPPINGS["FaceDetailer"]()
         saveimage = SaveImage()
 
         for q in range(10):
-            ksampleradvanced_99 = ksampleradvanced.sample(
-                add_noise="enable",
-                noise_seed=random.randint(1, 2**64),
-                steps=25,
-                cfg=8,
-                sampler_name="euler_ancestral",
-                scheduler="normal",
-                start_at_step=0,
-                end_at_step=10000,
-                return_with_leftover_noise="disable",
-                model=get_value_at_index(freeu_v2_105, 0),
-                positive=get_value_at_index(efficient_loader_48, 1),
-                negative=get_value_at_index(efficient_loader_48, 2),
-                latent_image=get_value_at_index(efficient_loader_48, 3),
-            )
-
-            vaedecode_101 = vaedecode.decode(
-                samples=get_value_at_index(ksampleradvanced_99, 0),
-                vae=get_value_at_index(efficient_loader_48, 4),
-            )
-
             ultimatesdupscale_52 = ultimatesdupscale.upscale(
                 upscale_by=2,
                 seed=random.randint(1, 2**64),
                 steps=4,
                 cfg=2,
                 sampler_name="euler_ancestral",
-                scheduler="sgm_uniform",
+                scheduler="normal",
                 denoise=0.2,
                 mode_type="Linear",
                 tile_width=1024,
@@ -229,7 +190,7 @@ def main():
                 seam_fix_padding=16,
                 force_uniform_tiles=True,
                 tiled_decode=False,
-                image=get_value_at_index(vaedecode_101, 0),
+                image=get_value_at_index(loadimage_108, 0),
                 model=get_value_at_index(loraloadermodelonly_98, 0),
                 positive=get_value_at_index(efficient_loader_48, 1),
                 negative=get_value_at_index(efficient_loader_48, 2),
@@ -245,7 +206,7 @@ def main():
                 steps=4,
                 cfg=2,
                 sampler_name="euler_ancestral",
-                scheduler="sgm_uniform",
+                scheduler="normal",
                 denoise=0.5,
                 feather=5,
                 noise_mask=True,
@@ -275,7 +236,7 @@ def main():
             )
 
             saveimage_87 = saveimage.save_images(
-                filename_prefix="draft/032524",
+                filename_prefix="draft/042524",
                 images=get_value_at_index(facedetailer_84, 0),
             )
 
