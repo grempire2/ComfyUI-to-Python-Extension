@@ -20,156 +20,11 @@
       "title": "Efficient Loader"
     }
   },
-  "52": {
-    "inputs": {
-      "upscale_by": 2,
-      "seed": 550183949755605,
-      "steps": 4,
-      "cfg": 2,
-      "sampler_name": "euler_ancestral",
-      "scheduler": "normal",
-      "denoise": 0.2,
-      "mode_type": "Linear",
-      "tile_width": 1024,
-      "tile_height": 1024,
-      "mask_blur": 8,
-      "tile_padding": 32,
-      "seam_fix_mode": "None",
-      "seam_fix_denoise": 1,
-      "seam_fix_width": 64,
-      "seam_fix_mask_blur": 8,
-      "seam_fix_padding": 16,
-      "force_uniform_tiles": true,
-      "tiled_decode": false,
-      "image": [
-        "108",
-        0
-      ],
-      "model": [
-        "98",
-        0
-      ],
-      "positive": [
-        "48",
-        1
-      ],
-      "negative": [
-        "48",
-        2
-      ],
-      "vae": [
-        "48",
-        4
-      ],
-      "upscale_model": [
-        "56",
-        0
-      ]
-    },
-    "class_type": "UltimateSDUpscale",
-    "_meta": {
-      "title": "Ultimate SD Upscale"
-    }
-  },
-  "56": {
-    "inputs": {
-      "model_name": "4x_NMKD-Superscale-SP_178000_G.pth"
-    },
-    "class_type": "UpscaleModelLoader",
-    "_meta": {
-      "title": "Load Upscale Model"
-    }
-  },
-  "84": {
-    "inputs": {
-      "guide_size": 384,
-      "guide_size_for": true,
-      "max_size": 1024,
-      "seed": 766449730356693,
-      "steps": 4,
-      "cfg": 2,
-      "sampler_name": "euler_ancestral",
-      "scheduler": "normal",
-      "denoise": 0.5,
-      "feather": 5,
-      "noise_mask": true,
-      "force_inpaint": true,
-      "bbox_threshold": 0.5,
-      "bbox_dilation": 10,
-      "bbox_crop_factor": 3,
-      "sam_detection_hint": "center-1",
-      "sam_dilation": 0,
-      "sam_threshold": 0.93,
-      "sam_bbox_expansion": 0,
-      "sam_mask_hint_threshold": 0.7000000000000001,
-      "sam_mask_hint_use_negative": "False",
-      "drop_size": 10,
-      "wildcard": "",
-      "cycle": 1,
-      "inpaint_model": false,
-      "noise_mask_feather": 20,
-      "image": [
-        "52",
-        0
-      ],
-      "model": [
-        "98",
-        0
-      ],
-      "clip": [
-        "48",
-        5
-      ],
-      "vae": [
-        "48",
-        4
-      ],
-      "positive": [
-        "48",
-        1
-      ],
-      "negative": [
-        "48",
-        2
-      ],
-      "bbox_detector": [
-        "85",
-        0
-      ],
-      "sam_model_opt": [
-        "86",
-        0
-      ]
-    },
-    "class_type": "FaceDetailer",
-    "_meta": {
-      "title": "FaceDetailer"
-    }
-  },
-  "85": {
-    "inputs": {
-      "model_name": "bbox/face_yolov8m.pt"
-    },
-    "class_type": "UltralyticsDetectorProvider",
-    "_meta": {
-      "title": "UltralyticsDetectorProvider"
-    }
-  },
-  "86": {
-    "inputs": {
-      "model_name": "sam_vit_b_01ec64.pth",
-      "device_mode": "AUTO"
-    },
-    "class_type": "SAMLoader",
-    "_meta": {
-      "title": "SAMLoader (Impact)"
-    }
-  },
   "87": {
     "inputs": {
-      "filename_prefix": "draft/042524",
+      "filename_prefix": "042524",
       "images": [
-        "84",
+        "101",
         0
       ]
     },
@@ -178,18 +33,53 @@
       "title": "Save Image"
     }
   },
-  "98": {
+  "99": {
     "inputs": {
-      "lora_name": "sdxl_lightning_4step_lora.safetensors",
-      "strength_model": 1,
+      "add_noise": "enable",
+      "noise_seed": 706280524790595,
+      "steps": 25,
+      "cfg": 8,
+      "sampler_name": "euler_ancestral",
+      "scheduler": "normal",
+      "start_at_step": 0,
+      "end_at_step": 10000,
+      "return_with_leftover_noise": "disable",
       "model": [
         "105",
         0
+      ],
+      "positive": [
+        "48",
+        1
+      ],
+      "negative": [
+        "48",
+        2
+      ],
+      "latent_image": [
+        "48",
+        3
       ]
     },
-    "class_type": "LoraLoaderModelOnly",
+    "class_type": "KSamplerAdvanced",
     "_meta": {
-      "title": "LoraLoaderModelOnly"
+      "title": "KSampler (Advanced)"
+    }
+  },
+  "101": {
+    "inputs": {
+      "samples": [
+        "99",
+        0
+      ],
+      "vae": [
+        "48",
+        4
+      ]
+    },
+    "class_type": "VAEDecode",
+    "_meta": {
+      "title": "VAE Decode"
     }
   },
   "105": {
@@ -206,16 +96,6 @@
     "class_type": "FreeU_V2",
     "_meta": {
       "title": "FreeU_V2"
-    }
-  },
-  "108": {
-    "inputs": {
-      "image": "042524_00010_.png",
-      "upload": "image"
-    },
-    "class_type": "LoadImage",
-    "_meta": {
-      "title": "Load Image"
     }
   }
 }

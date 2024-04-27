@@ -106,7 +106,7 @@ def import_custom_nodes() -> None:
     init_custom_nodes()
 
 
-from nodes import LoraLoaderModelOnly, LoadImage, SaveImage, NODE_CLASS_MAPPINGS
+from nodes import KSamplerAdvanced, NODE_CLASS_MAPPINGS, VAEDecode, SaveImage
 
 
 def main():
@@ -129,115 +129,43 @@ def main():
             batch_size=1,
         )
 
-        upscalemodelloader = NODE_CLASS_MAPPINGS["UpscaleModelLoader"]()
-        upscalemodelloader_56 = upscalemodelloader.load_model(
-            model_name="4x_NMKD-Superscale-SP_178000_G.pth"
-        )
-
-        ultralyticsdetectorprovider = NODE_CLASS_MAPPINGS[
-            "UltralyticsDetectorProvider"
-        ]()
-        ultralyticsdetectorprovider_85 = ultralyticsdetectorprovider.doit(
-            model_name="bbox/face_yolov8m.pt"
-        )
-
-        samloader = NODE_CLASS_MAPPINGS["SAMLoader"]()
-        samloader_86 = samloader.load_model(
-            model_name="sam_vit_b_01ec64.pth", device_mode="AUTO"
-        )
-
         freeu_v2 = NODE_CLASS_MAPPINGS["FreeU_V2"]()
-        freeu_v2_105 = freeu_v2.patch(
-            b1=1.1,
-            b2=1.1500000000000001,
-            s1=0.85,
-            s2=0.35000000000000003,
-            model=get_value_at_index(efficient_loader_48, 0),
-        )
-
-        loraloadermodelonly = LoraLoaderModelOnly()
-        loraloadermodelonly_98 = loraloadermodelonly.load_lora_model_only(
-            lora_name="sdxl_lightning_4step_lora.safetensors",
-            strength_model=1,
-            model=get_value_at_index(freeu_v2_105, 0),
-        )
-
-        loadimage = LoadImage()
-        loadimage_108 = loadimage.load_image(image="042524_00010_.png")
-
-        ultimatesdupscale = NODE_CLASS_MAPPINGS["UltimateSDUpscale"]()
-        facedetailer = NODE_CLASS_MAPPINGS["FaceDetailer"]()
+        ksampleradvanced = KSamplerAdvanced()
+        vaedecode = VAEDecode()
         saveimage = SaveImage()
 
         for q in range(10):
-            ultimatesdupscale_52 = ultimatesdupscale.upscale(
-                upscale_by=2,
-                seed=random.randint(1, 2**64),
-                steps=4,
-                cfg=2,
-                sampler_name="euler_ancestral",
-                scheduler="normal",
-                denoise=0.2,
-                mode_type="Linear",
-                tile_width=1024,
-                tile_height=1024,
-                mask_blur=8,
-                tile_padding=32,
-                seam_fix_mode="None",
-                seam_fix_denoise=1,
-                seam_fix_width=64,
-                seam_fix_mask_blur=8,
-                seam_fix_padding=16,
-                force_uniform_tiles=True,
-                tiled_decode=False,
-                image=get_value_at_index(loadimage_108, 0),
-                model=get_value_at_index(loraloadermodelonly_98, 0),
-                positive=get_value_at_index(efficient_loader_48, 1),
-                negative=get_value_at_index(efficient_loader_48, 2),
-                vae=get_value_at_index(efficient_loader_48, 4),
-                upscale_model=get_value_at_index(upscalemodelloader_56, 0),
+            freeu_v2_105 = freeu_v2.patch(
+                b1=1.1,
+                b2=1.1500000000000001,
+                s1=0.85,
+                s2=0.35000000000000003,
+                model=get_value_at_index(efficient_loader_48, 0),
             )
 
-            facedetailer_84 = facedetailer.doit(
-                guide_size=384,
-                guide_size_for=True,
-                max_size=1024,
-                seed=random.randint(1, 2**64),
-                steps=4,
-                cfg=2,
+            ksampleradvanced_99 = ksampleradvanced.sample(
+                add_noise="enable",
+                noise_seed=random.randint(1, 2**64),
+                steps=25,
+                cfg=8,
                 sampler_name="euler_ancestral",
                 scheduler="normal",
-                denoise=0.5,
-                feather=5,
-                noise_mask=True,
-                force_inpaint=True,
-                bbox_threshold=0.5,
-                bbox_dilation=10,
-                bbox_crop_factor=3,
-                sam_detection_hint="center-1",
-                sam_dilation=0,
-                sam_threshold=0.93,
-                sam_bbox_expansion=0,
-                sam_mask_hint_threshold=0.7000000000000001,
-                sam_mask_hint_use_negative="False",
-                drop_size=10,
-                wildcard="",
-                cycle=1,
-                inpaint_model=False,
-                noise_mask_feather=20,
-                image=get_value_at_index(ultimatesdupscale_52, 0),
-                model=get_value_at_index(loraloadermodelonly_98, 0),
-                clip=get_value_at_index(efficient_loader_48, 5),
-                vae=get_value_at_index(efficient_loader_48, 4),
+                start_at_step=0,
+                end_at_step=10000,
+                return_with_leftover_noise="disable",
+                model=get_value_at_index(freeu_v2_105, 0),
                 positive=get_value_at_index(efficient_loader_48, 1),
                 negative=get_value_at_index(efficient_loader_48, 2),
-                bbox_detector=get_value_at_index(ultralyticsdetectorprovider_85, 0),
-                sam_model_opt=get_value_at_index(samloader_86, 0),
+                latent_image=get_value_at_index(efficient_loader_48, 3),
+            )
+
+            vaedecode_101 = vaedecode.decode(
+                samples=get_value_at_index(ksampleradvanced_99, 0),
+                vae=get_value_at_index(efficient_loader_48, 4),
             )
 
             saveimage_87 = saveimage.save_images(
-                filename_prefix="draft/042524",
-                images=get_value_at_index(facedetailer_84, 0),
+                filename_prefix="042524", images=get_value_at_index(vaedecode_101, 0)
             )
 
 
