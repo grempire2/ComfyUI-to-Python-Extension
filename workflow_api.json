@@ -1,30 +1,193 @@
 {
-  "48": {
+  "3": {
     "inputs": {
-      "ckpt_name": "aiponyanime_v1.safetensors",
-      "vae_name": "Baked VAE",
-      "clip_skip": -2,
-      "lora_name": "None",
-      "lora_model_strength": 1,
-      "lora_clip_strength": 1,
-      "positive": "1girl robot girl, (robot joints, intervention unit, glowing chest), full body, white mechanical head, bangs, arched back, hoodie, covered nipples, provocative, cosmic, cables electrical wires, smirk,covered face",
-      "negative": "(bad quality:1.4), unaestheticXL_Alb2 signature watermark logo signature, (censored), (navel)",
-      "token_normalization": "mean",
-      "weight_interpretation": "A1111",
-      "empty_latent_width": 1024,
-      "empty_latent_height": 1024,
-      "batch_size": 1
+      "seed": 797795355567616,
+      "steps": 8,
+      "cfg": 1.5,
+      "sampler_name": "lcm",
+      "scheduler": "simple",
+      "denoise": 1,
+      "model": [
+        "26",
+        0
+      ],
+      "positive": [
+        "6",
+        0
+      ],
+      "negative": [
+        "7",
+        0
+      ],
+      "latent_image": [
+        "5",
+        0
+      ]
     },
-    "class_type": "Efficient Loader",
+    "class_type": "KSampler",
     "_meta": {
-      "title": "Efficient Loader"
+      "title": "KSampler"
     }
   },
-  "87": {
+  "4": {
     "inputs": {
-      "filename_prefix": "042524",
+      "ckpt_name": "hassakuHentaiModel_v13.safetensors"
+    },
+    "class_type": "CheckpointLoaderSimple",
+    "_meta": {
+      "title": "Load Checkpoint"
+    }
+  },
+  "5": {
+    "inputs": {
+      "width": 512,
+      "height": 768,
+      "batch_size": 1
+    },
+    "class_type": "EmptyLatentImage",
+    "_meta": {
+      "title": "Empty Latent Image"
+    }
+  },
+  "6": {
+    "inputs": {
+      "text": "1girl, loli, yellow eyes, long hair, white hair, red kimono, nature, hair ornament, animal ears, water, eyes, lips, blush, large breast, nipples, off shoulder, (projectile lactation), orgasm",
+      "clip": [
+        "17",
+        1
+      ]
+    },
+    "class_type": "CLIPTextEncode",
+    "_meta": {
+      "title": "CLIP Text Encode (Prompt)"
+    }
+  },
+  "7": {
+    "inputs": {
+      "text": "(worst quality, low quality:1.4), signature,",
+      "clip": [
+        "17",
+        1
+      ]
+    },
+    "class_type": "CLIPTextEncode",
+    "_meta": {
+      "title": "CLIP Text Encode (Prompt)"
+    }
+  },
+  "10": {
+    "inputs": {
+      "stop_at_clip_layer": -2,
+      "clip": [
+        "4",
+        1
+      ]
+    },
+    "class_type": "CLIPSetLastLayer",
+    "_meta": {
+      "title": "CLIP Set Last Layer"
+    }
+  },
+  "16": {
+    "inputs": {
+      "b1": 1.3,
+      "b2": 1.4000000000000001,
+      "s1": 0.9,
+      "s2": 0.2,
+      "model": [
+        "4",
+        0
+      ]
+    },
+    "class_type": "FreeU_V2",
+    "_meta": {
+      "title": "FreeU_V2"
+    }
+  },
+  "17": {
+    "inputs": {
+      "lora_name": "lcm\\SD1.5\\pytorch_lora_weights.safetensors",
+      "strength_model": 1,
+      "strength_clip": 1,
+      "model": [
+        "16",
+        0
+      ],
+      "clip": [
+        "10",
+        0
+      ]
+    },
+    "class_type": "LoraLoader",
+    "_meta": {
+      "title": "Load LoRA"
+    }
+  },
+  "18": {
+    "inputs": {
+      "upscale_method": "bislerp",
+      "scale_by": 1.5,
+      "samples": [
+        "3",
+        0
+      ]
+    },
+    "class_type": "LatentUpscaleBy",
+    "_meta": {
+      "title": "Upscale Latent By"
+    }
+  },
+  "21": {
+    "inputs": {
+      "seed": 86646895875633,
+      "steps": 8,
+      "cfg": 1.5,
+      "sampler_name": "lcm",
+      "scheduler": "simple",
+      "denoise": 0.45,
+      "model": [
+        "26",
+        0
+      ],
+      "positive": [
+        "6",
+        0
+      ],
+      "negative": [
+        "7",
+        0
+      ],
+      "latent_image": [
+        "18",
+        0
+      ]
+    },
+    "class_type": "KSampler",
+    "_meta": {
+      "title": "KSampler"
+    }
+  },
+  "22": {
+    "inputs": {
+      "samples": [
+        "21",
+        0
+      ],
+      "vae": [
+        "4",
+        2
+      ]
+    },
+    "class_type": "VAEDecode",
+    "_meta": {
+      "title": "VAE Decode"
+    }
+  },
+  "24": {
+    "inputs": {
+      "filename_prefix": "ComfyUI",
       "images": [
-        "101",
+        "22",
         0
       ]
     },
@@ -33,69 +196,30 @@
       "title": "Save Image"
     }
   },
-  "99": {
-    "inputs": {
-      "add_noise": "enable",
-      "noise_seed": 706280524790595,
-      "steps": 25,
-      "cfg": 8,
-      "sampler_name": "euler_ancestral",
-      "scheduler": "normal",
-      "start_at_step": 0,
-      "end_at_step": 10000,
-      "return_with_leftover_noise": "disable",
-      "model": [
-        "105",
-        0
-      ],
-      "positive": [
-        "48",
-        1
-      ],
-      "negative": [
-        "48",
-        2
-      ],
-      "latent_image": [
-        "48",
-        3
-      ]
-    },
-    "class_type": "KSamplerAdvanced",
-    "_meta": {
-      "title": "KSampler (Advanced)"
-    }
-  },
-  "101": {
-    "inputs": {
-      "samples": [
-        "99",
-        0
-      ],
-      "vae": [
-        "48",
-        4
-      ]
-    },
-    "class_type": "VAEDecode",
-    "_meta": {
-      "title": "VAE Decode"
-    }
-  },
-  "105": {
+  "25": {
     "inputs": {
       "b1": 1.1,
       "b2": 1.1500000000000001,
       "s1": 0.85,
-      "s2": 0.35000000000000003,
-      "model": [
-        "48",
-        0
-      ]
+      "s2": 0.35000000000000003
     },
     "class_type": "FreeU_V2",
     "_meta": {
       "title": "FreeU_V2"
+    }
+  },
+  "26": {
+    "inputs": {
+      "lora_name": "projectile_lactation_v0.6.safetensors",
+      "strength_model": 1,
+      "model": [
+        "17",
+        0
+      ]
+    },
+    "class_type": "LoraLoaderModelOnly",
+    "_meta": {
+      "title": "LoraLoaderModelOnly"
     }
   }
 }
