@@ -91,7 +91,7 @@ def import_custom_nodes() -> None:
     """
     import asyncio
     import execution
-    from nodes import init_custom_nodes
+    from nodes import init_extra_nodes
     import server
 
     # Creating a new event loop and setting it as the default loop
@@ -103,18 +103,17 @@ def import_custom_nodes() -> None:
     execution.PromptQueue(server_instance)
 
     # Initializing custom nodes
-    init_custom_nodes()
+    init_extra_nodes()
 
 
 from nodes import (
-    KSamplerAdvanced,
-    VAEDecode,
-    CLIPTextEncode,
-    CheckpointLoaderSimple,
-    EmptyLatentImage,
-    CLIPSetLastLayer,
     SaveImage,
+    CLIPSetLastLayer,
+    CLIPTextEncode,
+    LoraLoaderModelOnly,
     NODE_CLASS_MAPPINGS,
+    LoadImage,
+    CheckpointLoaderSimple,
 )
 
 
@@ -122,70 +121,142 @@ def main():
     import_custom_nodes()
     with torch.inference_mode():
         checkpointloadersimple = CheckpointLoaderSimple()
-        checkpointloadersimple_110 = checkpointloadersimple.load_checkpoint(
-            ckpt_name="aiponyanime_v1.safetensors"
+        checkpointloadersimple_4 = checkpointloadersimple.load_checkpoint(
+            ckpt_name="aiponyanime_v2.safetensors"
         )
 
         clipsetlastlayer = CLIPSetLastLayer()
-        clipsetlastlayer_111 = clipsetlastlayer.set_last_layer(
-            stop_at_clip_layer=-2,
-            clip=get_value_at_index(checkpointloadersimple_110, 1),
+        clipsetlastlayer_10 = clipsetlastlayer.set_last_layer(
+            stop_at_clip_layer=-2, clip=get_value_at_index(checkpointloadersimple_4, 1)
         )
 
         cliptextencode = CLIPTextEncode()
-        cliptextencode_112 = cliptextencode.encode(
-            text="1girl, ginger red head green eyes leaning over, (short sweater dress) off shoulder, cleavage, sexy, seductive, long hair, lips, small waist looking at the viewer revealing bokeh (light particles choker)",
-            clip=get_value_at_index(clipsetlastlayer_111, 0),
+        cliptextencode_6 = cliptextencode.encode(
+            text="1girl, young teen, (pale), one piece nami,\n \nslim waist, sexy, revealing, skimpy, seductive, covered nipples,\n\n(bride:1.4), lace, earrings, pubic hair, sheer skirt, stockings,\ncolorful, bouquet, ribbons, bracelet,\n\nlooking at viewer,\n\n(surprised), open mouth smile, sweat, constricted pupils, spoken exclamation, sweat,\n\n(blank background, white background),",
+            clip=get_value_at_index(clipsetlastlayer_10, 0),
         )
 
-        cliptextencode_113 = cliptextencode.encode(
-            text="(bad quality:1.4), unaestheticXL_Alb2 signature watermark logo signature, (censored) (bra) (belt)",
-            clip=get_value_at_index(clipsetlastlayer_111, 0),
-        )
-
-        emptylatentimage = EmptyLatentImage()
-        emptylatentimage_114 = emptylatentimage.generate(
-            width=1024, height=1024, batch_size=1
+        cliptextencode_7 = cliptextencode.encode(
+            text="(bad quality:1.4),(worst quality:1.4),unaestheticXL_Alb2,guly,(censored),monochrome,blurry, lowres,watermark,(old),(mature),asian,(nsfw),nipples,skinny,phone,bed",
+            clip=get_value_at_index(clipsetlastlayer_10, 0),
         )
 
         freeu_v2 = NODE_CLASS_MAPPINGS["FreeU_V2"]()
-        ksampleradvanced = KSamplerAdvanced()
-        vaedecode = VAEDecode()
+        freeu_v2_25 = freeu_v2.patch(
+            b1=1.1,
+            b2=1.1500000000000001,
+            s1=0.85,
+            s2=0.35000000000000003,
+            model=get_value_at_index(checkpointloadersimple_4, 0),
+        )
+
+        loraloadermodelonly = LoraLoaderModelOnly()
+        loraloadermodelonly_48 = loraloadermodelonly.load_lora_model_only(
+            lora_name="1llum1XLP.safetensors",
+            strength_model=0.65,
+            model=get_value_at_index(freeu_v2_25, 0),
+        )
+
+        loraloadermodelonly_49 = loraloadermodelonly.load_lora_model_only(
+            lora_name="yandere_trance_v1_pruned.safetensors",
+            strength_model=0.65,
+            model=get_value_at_index(loraloadermodelonly_48, 0),
+        )
+
+        upscalemodelloader = NODE_CLASS_MAPPINGS["UpscaleModelLoader"]()
+        upscalemodelloader_55 = upscalemodelloader.load_model(
+            model_name="4x-AnimeSharp.pth"
+        )
+
+        ultralyticsdetectorprovider = NODE_CLASS_MAPPINGS[
+            "UltralyticsDetectorProvider"
+        ]()
+        ultralyticsdetectorprovider_59 = ultralyticsdetectorprovider.doit(
+            model_name="bbox/Eyeful_v2-Paired.pt"
+        )
+
+        samloader = NODE_CLASS_MAPPINGS["SAMLoader"]()
+        samloader_60 = samloader.load_model(
+            model_name="sam_vit_b_01ec64.pth", device_mode="AUTO"
+        )
+
+        loadimage = LoadImage()
+        loadimage_80 = loadimage.load_image(
+            image="cow girl code geass euphemia princess pov_00001_.png"
+        )
+
+        ultimatesdupscale = NODE_CLASS_MAPPINGS["UltimateSDUpscale"]()
+        facedetailer = NODE_CLASS_MAPPINGS["FaceDetailer"]()
         saveimage = SaveImage()
 
         for q in range(10):
-            freeu_v2_105 = freeu_v2.patch(
-                b1=1.1,
-                b2=1.1500000000000001,
-                s1=0.85,
-                s2=0.35000000000000003,
-                model=get_value_at_index(checkpointloadersimple_110, 0),
-            )
-
-            ksampleradvanced_99 = ksampleradvanced.sample(
-                add_noise="enable",
-                noise_seed=random.randint(1, 2**64),
+            ultimatesdupscale_51 = ultimatesdupscale.upscale(
+                upscale_by=4,
+                seed=random.randint(1, 2**64),
                 steps=25,
                 cfg=8,
                 sampler_name="euler_ancestral",
                 scheduler="normal",
-                start_at_step=0,
-                end_at_step=10000,
-                return_with_leftover_noise="disable",
-                model=get_value_at_index(freeu_v2_105, 0),
-                positive=get_value_at_index(cliptextencode_112, 0),
-                negative=get_value_at_index(cliptextencode_113, 0),
-                latent_image=get_value_at_index(emptylatentimage_114, 0),
+                denoise=0.1,
+                mode_type="Linear",
+                tile_width=832,
+                tile_height=1216,
+                mask_blur=8,
+                tile_padding=32,
+                seam_fix_mode="None",
+                seam_fix_denoise=1,
+                seam_fix_width=64,
+                seam_fix_mask_blur=8,
+                seam_fix_padding=16,
+                force_uniform_tiles=True,
+                tiled_decode=False,
+                image=get_value_at_index(loadimage_80, 0),
+                model=get_value_at_index(loraloadermodelonly_49, 0),
+                positive=get_value_at_index(cliptextencode_6, 0),
+                negative=get_value_at_index(cliptextencode_7, 0),
+                vae=get_value_at_index(checkpointloadersimple_4, 2),
+                upscale_model=get_value_at_index(upscalemodelloader_55, 0),
             )
 
-            vaedecode_101 = vaedecode.decode(
-                samples=get_value_at_index(ksampleradvanced_99, 0),
-                vae=get_value_at_index(checkpointloadersimple_110, 2),
+            facedetailer_63 = facedetailer.doit(
+                guide_size=512,
+                guide_size_for=True,
+                max_size=1024,
+                seed=random.randint(1, 2**64),
+                steps=25,
+                cfg=8,
+                sampler_name="euler_ancestral",
+                scheduler="normal",
+                denoise=0.17,
+                feather=5,
+                noise_mask=True,
+                force_inpaint=True,
+                bbox_threshold=0.2,
+                bbox_dilation=10,
+                bbox_crop_factor=3,
+                sam_detection_hint="center-1",
+                sam_dilation=0,
+                sam_threshold=0.93,
+                sam_bbox_expansion=0,
+                sam_mask_hint_threshold=0.7000000000000001,
+                sam_mask_hint_use_negative="False",
+                drop_size=10,
+                wildcard="",
+                cycle=1,
+                inpaint_model=False,
+                noise_mask_feather=20,
+                image=get_value_at_index(ultimatesdupscale_51, 0),
+                model=get_value_at_index(loraloadermodelonly_49, 0),
+                clip=get_value_at_index(clipsetlastlayer_10, 0),
+                vae=get_value_at_index(checkpointloadersimple_4, 2),
+                positive=get_value_at_index(cliptextencode_6, 0),
+                negative=get_value_at_index(cliptextencode_7, 0),
+                bbox_detector=get_value_at_index(ultralyticsdetectorprovider_59, 0),
+                sam_model_opt=get_value_at_index(samloader_60, 0),
             )
 
-            saveimage_71 = saveimage.save_images(
-                filename_prefix="draft/042824",
-                images=get_value_at_index(vaedecode_101, 0),
+            saveimage_57 = saveimage.save_images(
+                filename_prefix="ComfyUI", images=get_value_at_index(facedetailer_63, 0)
             )
 
 

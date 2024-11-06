@@ -12,7 +12,7 @@ import black
 
 # Append the script's directory to sys.path
 script_dir = os.path.dirname(os.path.abspath(__file__))
-sys.path.append(script_dir)
+sys.path.insert(0, script_dir)
 
 from utils import import_custom_nodes, find_path, add_comfyui_directory_to_sys_path, add_extra_model_paths, get_value_at_index
 

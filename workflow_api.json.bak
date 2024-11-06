@@ -1,4 +1,34 @@
 {
+  "3": {
+    "inputs": {
+      "seed": 454818697153207,
+      "steps": 25,
+      "cfg": 8,
+      "sampler_name": "euler_ancestral",
+      "scheduler": "normal",
+      "denoise": 1,
+      "model": [
+        "49",
+        0
+      ],
+      "positive": [
+        "6",
+        0
+      ],
+      "negative": [
+        "7",
+        0
+      ],
+      "latent_image": [
+        "5",
+        0
+      ]
+    },
+    "class_type": "KSampler",
+    "_meta": {
+      "title": "KSampler"
+    }
+  },
   "4": {
     "inputs": {
       "ckpt_name": "aiponyanime_v2.safetensors"
@@ -6,6 +36,17 @@
     "class_type": "CheckpointLoaderSimple",
     "_meta": {
       "title": "Load Checkpoint"
+    }
+  },
+  "5": {
+    "inputs": {
+      "width": 832,
+      "height": 1216,
+      "batch_size": 3
+    },
+    "class_type": "EmptyLatentImage",
+    "_meta": {
+      "title": "Empty Latent Image"
     }
   },
   "6": {
@@ -63,6 +104,22 @@
       "title": "FreeU_V2"
     }
   },
+  "35": {
+    "inputs": {
+      "samples": [
+        "3",
+        0
+      ],
+      "vae": [
+        "4",
+        2
+      ]
+    },
+    "class_type": "VAEDecode",
+    "_meta": {
+      "title": "VAE Decode"
+    }
+  },
   "48": {
     "inputs": {
       "lora_name": "1llum1XLP.safetensors",
@@ -113,7 +170,7 @@
       "force_uniform_tiles": true,
       "tiled_decode": false,
       "image": [
-        "80",
+        "35",
         0
       ],
       "model": [
@@ -249,14 +306,40 @@
       "title": "FaceDetailer"
     }
   },
-  "80": {
+  "64": {
     "inputs": {
-      "image": "cow girl code geass euphemia princess pov_00001_.png",
-      "upload": "image"
+      "mask": [
+        "63",
+        3
+      ]
     },
-    "class_type": "LoadImage",
+    "class_type": "MaskToImage",
     "_meta": {
-      "title": "Load Image"
+      "title": "Convert Mask to Image"
+    }
+  },
+  "65": {
+    "inputs": {
+      "images": [
+        "64",
+        0
+      ]
+    },
+    "class_type": "PreviewImage",
+    "_meta": {
+      "title": "Preview Image"
+    }
+  },
+  "79": {
+    "inputs": {
+      "images": [
+        "35",
+        0
+      ]
+    },
+    "class_type": "PreviewImage",
+    "_meta": {
+      "title": "Preview Image"
     }
   }
 }
