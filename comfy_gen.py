@@ -107,12 +107,12 @@ def import_custom_nodes() -> None:
 
 
 from nodes import (
-    SaveImage,
-    CLIPSetLastLayer,
-    CLIPTextEncode,
-    LoraLoaderModelOnly,
     NODE_CLASS_MAPPINGS,
     LoadImage,
+    CLIPSetLastLayer,
+    CLIPTextEncode,
+    SaveImage,
+    LoraLoaderModelOnly,
     CheckpointLoaderSimple,
 )
 
@@ -132,13 +132,11 @@ def main():
 
         cliptextencode = CLIPTextEncode()
         cliptextencode_6 = cliptextencode.encode(
-            text="1girl, young teen, (pale), one piece nami,\n \nslim waist, sexy, revealing, skimpy, seductive, covered nipples,\n\n(bride:1.4), lace, earrings, pubic hair, sheer skirt, stockings,\ncolorful, bouquet, ribbons, bracelet,\n\nlooking at viewer,\n\n(surprised), open mouth smile, sweat, constricted pupils, spoken exclamation, sweat,\n\n(blank background, white background),",
-            clip=get_value_at_index(clipsetlastlayer_10, 0),
+            text="positive", clip=get_value_at_index(clipsetlastlayer_10, 0)
         )
 
         cliptextencode_7 = cliptextencode.encode(
-            text="(bad quality:1.4),(worst quality:1.4),unaestheticXL_Alb2,guly,(censored),monochrome,blurry, lowres,watermark,(old),(mature),asian,(nsfw),nipples,skinny,phone,bed",
-            clip=get_value_at_index(clipsetlastlayer_10, 0),
+            text="negative", clip=get_value_at_index(clipsetlastlayer_10, 0)
         )
 
         freeu_v2 = NODE_CLASS_MAPPINGS["FreeU_V2"]()
@@ -181,12 +179,11 @@ def main():
         )
 
         loadimage = LoadImage()
-        loadimage_80 = loadimage.load_image(
-            image="cow girl code geass euphemia princess pov_00001_.png"
-        )
+        loadimage_82 = loadimage.load_image(image="test.png")
 
         ultimatesdupscale = NODE_CLASS_MAPPINGS["UltimateSDUpscale"]()
         facedetailer = NODE_CLASS_MAPPINGS["FaceDetailer"]()
+        inspyrenetrembg = NODE_CLASS_MAPPINGS["InspyrenetRembg"]()
         saveimage = SaveImage()
 
         for q in range(10):
@@ -210,7 +207,7 @@ def main():
                 seam_fix_padding=16,
                 force_uniform_tiles=True,
                 tiled_decode=False,
-                image=get_value_at_index(loadimage_80, 0),
+                image=get_value_at_index(loadimage_82, 0),
                 model=get_value_at_index(loraloadermodelonly_49, 0),
                 positive=get_value_at_index(cliptextencode_6, 0),
                 negative=get_value_at_index(cliptextencode_7, 0),
@@ -255,8 +252,13 @@ def main():
                 sam_model_opt=get_value_at_index(samloader_60, 0),
             )
 
+            inspyrenetrembg_83 = inspyrenetrembg.remove_background(
+                torchscript_jit="default", image=get_value_at_index(facedetailer_63, 0)
+            )
+
             saveimage_57 = saveimage.save_images(
-                filename_prefix="ComfyUI", images=get_value_at_index(facedetailer_63, 0)
+                filename_prefix="ComfyUI",
+                images=get_value_at_index(inspyrenetrembg_83, 0),
             )
 
 

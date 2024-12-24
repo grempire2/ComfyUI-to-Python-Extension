@@ -10,7 +10,7 @@
   },
   "6": {
     "inputs": {
-      "text": "1girl, young teen, (pale), one piece nami,\n \nslim waist, sexy, revealing, skimpy, seductive, covered nipples,\n\n(bride:1.4), lace, earrings, pubic hair, sheer skirt, stockings,\ncolorful, bouquet, ribbons, bracelet,\n\nlooking at viewer,\n\n(surprised), open mouth smile, sweat, constricted pupils, spoken exclamation, sweat,\n\n(blank background, white background),",
+      "text": "positive",
       "clip": [
         "10",
         0
@@ -23,7 +23,7 @@
   },
   "7": {
     "inputs": {
-      "text": "(bad quality:1.4),(worst quality:1.4),unaestheticXL_Alb2,guly,(censored),monochrome,blurry, lowres,watermark,(old),(mature),asian,(nsfw),nipples,skinny,phone,bed",
+      "text": "negative",
       "clip": [
         "10",
         0
@@ -113,7 +113,7 @@
       "force_uniform_tiles": true,
       "tiled_decode": false,
       "image": [
-        "80",
+        "82",
         0
       ],
       "model": [
@@ -155,7 +155,7 @@
     "inputs": {
       "filename_prefix": "ComfyUI",
       "images": [
-        "63",
+        "83",
         0
       ]
     },
@@ -249,14 +249,27 @@
       "title": "FaceDetailer"
     }
   },
-  "80": {
+  "82": {
     "inputs": {
-      "image": "cow girl code geass euphemia princess pov_00001_.png",
+      "image": "test.png",
       "upload": "image"
     },
     "class_type": "LoadImage",
     "_meta": {
       "title": "Load Image"
+    }
+  },
+  "83": {
+    "inputs": {
+      "torchscript_jit": "default",
+      "image": [
+        "63",
+        0
+      ]
+    },
+    "class_type": "InspyrenetRembg",
+    "_meta": {
+      "title": "Inspyrenet Rembg"
     }
   }
 }
